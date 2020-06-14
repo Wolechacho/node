@@ -566,13 +566,17 @@ uvwasi_errno_t uvwasi_fd_allocate(uvwasi_t* uvwasi,
 
   /* Try to use posix_fallocate(). If that's not an option, fall back to the
      race condition prone combination of fstat() + ftruncate(). */
-#if defined(__POSIX__)
-  r = posix_fallocate(wrap->fd, offset, len);
-  if (r != 0) {
-    err = uvwasi__translate_uv_error(uv_translate_sys_error(r));
-    goto exit;
-  }
-#else
+// #if defined(__POSIX__)
+//   fprintf(stderr, "calling posix_fallocate()\n");
+//   fflush(stderr);
+//   r = posix_fallocate(wrap->fd, offset, len);
+//   if (r != 0) {
+//     err = uvwasi__translate_uv_error(uv_translate_sys_error(r));
+//     goto exit;
+//   }
+// #else
+  fprintf(stderr, "calling uv_fs_fstat()\n");
+  fflush(stderr);
   r = uv_fs_fstat(NULL, &req, wrap->fd, NULL);
   st_size = req.statbuf.st_size;
   uv_fs_req_cleanup(&req);
@@ -588,7 +592,7 @@ uvwasi_errno_t uvwasi_fd_allocate(uvwasi_t* uvwasi,
       goto exit;
     }
   }
-#endif /* __POSIX__ */
+// #endif /* __POSIX__ */
 
   err = UVWASI_ESUCCESS;
 exit:
@@ -873,7 +877,11 @@ uvwasi_errno_t uvwasi_fd_filestat_set_size(uvwasi_t* uvwasi,
   if (err != UVWASI_ESUCCESS)
     return err;
 
+  fprintf(stderr, "calling uv_fs_ftruncate()\n");
+  fflush(stderr);
   r = uv_fs_ftruncate(NULL, &req, wrap->fd, st_size, NULL);
+  fprintf(stderr, "r = %d\n", r);
+  fflush(stderr);
   uv_mutex_unlock(&wrap->mutex);
   uv_fs_req_cleanup(&req);
 
@@ -1388,6 +1396,8 @@ uvwasi_errno_t uvwasi_fd_tell(uvwasi_t* uvwasi,
   if (err != UVWASI_ESUCCESS)
     return err;
 
+  fprintf(stderr, "calling uvwasi__lseek()\n");
+  fflush(stderr);
   err = uvwasi__lseek(wrap->fd, 0, UVWASI_WHENCE_CUR, offset);
   uv_mutex_unlock(&wrap->mutex);
   return err;

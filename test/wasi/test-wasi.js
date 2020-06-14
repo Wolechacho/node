@@ -56,44 +56,48 @@ if (process.argv[2] === 'wasi-child') {
       'wasi-child',
       options.test
     ], opts);
+    console.log('STDERR');
     console.log(child.stderr.toString());
+    console.log('STDOUT');
+    console.log(child.stdout.toString());
     assert.strictEqual(child.status, options.exitCode || 0);
     assert.strictEqual(child.signal, null);
     assert.strictEqual(child.stdout.toString(), options.stdout || '');
   }
 
-  runWASI({ test: 'cant_dotdot' });
-
-  // Tests that are currently unsupported on IBM i PASE.
-  if (!common.isIBMi) {
-    runWASI({ test: 'clock_getres' });
-  }
-  runWASI({ test: 'exitcode', exitCode: 120 });
-  runWASI({ test: 'fd_prestat_get_refresh' });
-  runWASI({ test: 'freopen', stdout: `hello from input2.txt${EOL}` });
   runWASI({ test: 'ftruncate' });
-  runWASI({ test: 'getentropy' });
 
-  // Tests that are currently unsupported on IBM i PASE.
-  if (!common.isIBMi) {
-    runWASI({ test: 'getrusage' });
-  }
-  runWASI({ test: 'gettimeofday' });
-  runWASI({ test: 'link' });
-  runWASI({ test: 'main_args' });
-  runWASI({ test: 'notdir' });
-  runWASI({ test: 'poll' });
-  runWASI({ test: 'preopen_populates' });
-  runWASI({ test: 'read_file', stdout: `hello from input.txt${EOL}` });
-  runWASI({
-    test: 'read_file_twice',
-    stdout: `hello from input.txt${EOL}hello from input.txt${EOL}`
-  });
-  runWASI({ test: 'stat' });
-  runWASI({ test: 'write_file' });
+  // runWASI({ test: 'cant_dotdot' });
 
-  // Tests that are currently unsupported on Windows.
-  if (!common.isWindows) {
-    runWASI({ test: 'stdin', stdin: 'hello world', stdout: 'hello world' });
-  }
+  // // Tests that are currently unsupported on IBM i PASE.
+  // if (!common.isIBMi) {
+  //   runWASI({ test: 'clock_getres' });
+  // }
+  // runWASI({ test: 'exitcode', exitCode: 120 });
+  // runWASI({ test: 'fd_prestat_get_refresh' });
+  // runWASI({ test: 'freopen', stdout: `hello from input2.txt${EOL}` });
+  // runWASI({ test: 'getentropy' });
+
+  // // Tests that are currently unsupported on IBM i PASE.
+  // if (!common.isIBMi) {
+  //   runWASI({ test: 'getrusage' });
+  // }
+  // runWASI({ test: 'gettimeofday' });
+  // runWASI({ test: 'link' });
+  // runWASI({ test: 'main_args' });
+  // runWASI({ test: 'notdir' });
+  // runWASI({ test: 'poll' });
+  // runWASI({ test: 'preopen_populates' });
+  // runWASI({ test: 'read_file', stdout: `hello from input.txt${EOL}` });
+  // runWASI({
+  //   test: 'read_file_twice',
+  //   stdout: `hello from input.txt${EOL}hello from input.txt${EOL}`
+  // });
+  // runWASI({ test: 'stat' });
+  // runWASI({ test: 'write_file' });
+
+  // // Tests that are currently unsupported on Windows.
+  // if (!common.isWindows) {
+  //   runWASI({ test: 'stdin', stdin: 'hello world', stdout: 'hello world' });
+  // }
 }

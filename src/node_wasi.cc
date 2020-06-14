@@ -16,6 +16,7 @@ namespace wasi {
 template <typename... Args>
 inline void Debug(WASI* wasi, Args&&... args) {
   Debug(wasi->env(), DebugCategory::WASI, std::forward<Args>(args)...);
+  fflush(stderr);
 }
 
 #define ASSIGN_INITIALIZED_OR_RETURN_UNWRAP(ptr, obj)                          \
